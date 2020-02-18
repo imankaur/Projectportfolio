@@ -1,42 +1,71 @@
 import React, { Component } from 'react';
-import './App.css';
-import NavBar from './components/NavBar';
-import TechSpecs from './components/TechSpecs';
-import Summary from './components/Summary';
-import Features from './components/Features';
-import PriceDisplay from './components/PriceDisplay';
-import Specs from './components/Specs';
-import SummaryOptions from './components/SummaryOptions';
+import Customize from './Customize';
+import Cart from './Cart';
 
+// Normalizes string as a slug - a string that is safe to use
+// in both URLs and html attributes
+import slugify from 'slugify';
+import './App.css';
+
+
+const USCurrencyFormat = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD'
+});
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      selected: this.props.features.selected,
-      unselected: this.props.features.unselected
+  state = {
+    selected: {
+      Processor: {
+        name: '17th Generation Intel Core HB (7 Core with donut spare)',
+        cost: 700
+      },
+      'Operating System': {
+        name: 'Ubuntu Linux 16.04',
+        cost: 200
+      },
+      'Video Card': {
+        name: 'Toyota Corolla 1.5v',
+        cost: 1150.98
+      },
+      Display: {
+        name: '15.6" UHD (3840 x 2160) 60Hz Bright Lights and Knobs',
+        cost: 1500
+      }
     }
-  }
+  };
 
-  updateFeature(feature, newValue) {
+  
+
+  updateFeature = (feature, newValue) => {
     const selected = Object.assign({}, this.state.selected);
     selected[feature] = newValue;
     this.setState({
       selected
     });
-  }
+  };
 
   render() {
     return (
-      <div className="App">
-      <NavBar />
-        <main>
-          <TechSpecs  unselected={this.state.unselected} selected={this.state.selected} updateFeature={this.updateFeature.bind(this)}/>
-          <Summary selected={this.state.selected}/>
-        </main>
-      </div>
+    <div>
+      <header>
+          <h1>ELF Computing | Laptops</h1>
+      </header>
+      <main>
+        <Customize 
+                    selected={this.state.selected} 
+                    currency={USCurrencyFormat}  
+                    features={this.props.features} 
+                    select={this.updateFeature}
+        />
+        <Cart
+                    selected={this.state.selected}
+                    currency={USCurrencyFormat}
+        />
+      </main>
+    </div>
     );
   }
 }
 
-export default App;  
+export default App;
